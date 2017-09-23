@@ -3,59 +3,56 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Template • TodoMVC</title>
+		<title>Template • Todos</title>
 		<link rel="stylesheet" href="assets/css/base.css">
 		<link rel="stylesheet" href="assets/css/index.css">
 	</head>
-	<body>
+	<body ng-app="index" ng-controller="indexCtrl">
 		<section class="todoapp">
 			<header class="header">
 				<h1>todos</h1>
-				<input class="new-todo" placeholder="What needs to be done?" autofocus>
+				<input class="new-todo" ng-keyup="addList($event)" ng-model="val" placeholder="What needs to be done?" autofocus>
 			</header>
 			<!-- This section should be hidden by default and shown when there are todos -->
 			<section class="main">
-				<input class="toggle-all" type="checkbox">
+        <!--这里的input控制全选反选 复选框对应的ng-model的值是布尔值true 或者 false-->
+				<input class="toggle-all" type="checkbox" ng-model="status" ng-change="changeListStatus()">
 				<label for="toggle-all">Mark all as complete</label>
 				<ul class="todo-list">
 					<!-- These are here just to show the structure of the list items -->
 					<!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
-					<li class="completed">
+					<li ng-class="{'completed':item.isCompleted,'editing':item.isEditing}" ng-repeat="item in listArr | filter:{'isCompleted':condition}">
 						<div class="view">
-							<input class="toggle" type="checkbox" checked>
-							<label>Taste JavaScript</label>
-							<button class="destroy"></button>
+							<input class="toggle" type="checkbox" ng-model="item.isCompleted" ng-change="updateStatus()">
+              <!--显示任务列表明细的显示框-->
+              <!--为什么这里label的值改变时，可以实时改变listArr里面name对应的数据-->
+							<label ng-dblclick="modifyListName(item)">{{item.name}}</label>
+              <!--destrory是删除按钮-->
+							<button class="destroy" ng-click="deleteList(item)"></button>
 						</div>
-						<input class="edit" value="Create a TodoMVC template">
-					</li>
-					<li>
-						<div class="view">
-							<input class="toggle" type="checkbox">
-							<label>Buy a unicorn</label>
-							<button class="destroy"></button>
-						</div>
-						<input class="edit" value="Rule the web">
+            <!--双击label标签才会显示的编辑框-->
+						<input class="edit" value="Create a TodoMVC template" ng-model="item.name" ng-blur="cancelEditing(item)" ipt-focus>
 					</li>
 				</ul>
 			</section>
 			<!-- This footer should hidden by default and shown when there are todos -->
-			<footer class="footer">
+			<footer class="footer" ng-if="listArr.length !=0">
 				<!-- This should be `0 items left` by default -->
-				<span class="todo-count"><strong>0</strong> item left</span>
+				<span class="todo-count"><strong>{{unCompletedListNum()}}</strong> item left</span>
 				<!-- Remove this if you don't implement routing -->
 				<ul class="filters">
 					<li>
-						<a class="selected" href="#/">All</a>
+						<a ng-class="{'selected':isActive == 'All'}" ng-click="filterList('All')" href="#/">All</a>
 					</li>
 					<li>
-						<a href="#/active">Active</a>
+						<a ng-class="{'selected':isActive == 'Active'}" ng-click="filterList('Active')" href="#/active">Active</a>
 					</li>
 					<li>
-						<a href="#/completed">Completed</a>
+						<a ng-class="{'selected':isActive == 'Completed'}" ng-click="filterList('Completed')" href="#/completed">Completed</a>
 					</li>
 				</ul>
 				<!-- Hidden if no completed items are left ↓ -->
-				<button class="clear-completed">Clear completed</button>
+				<button class="clear-completed" ng-click="clearCompletedList()">Clear completed</button>
 			</footer>
 		</section>
 		<footer class="info">
@@ -66,5 +63,8 @@
 			<p>Created by <a href="http://todomvc.com">you</a></p>
 			<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
 		</footer>
+
+    <script src="node_modules/angular/angular.min.js"></script>
+    <script src="assets/js/index.js"></script>
 	</body>
 </html>
