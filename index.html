@@ -25,17 +25,18 @@
 						<div class="view">
 							<input class="toggle" type="checkbox" ng-model="item.isCompleted" ng-change="updateStatus()">
               <!--显示任务列表明细的显示框-->
-              <!--为什么这里label的值改变时，可以实时改变listArr里面name对应的数据-->
 							<label ng-dblclick="modifyListName(item)">{{item.name}}</label>
               <!--destrory是删除按钮-->
 							<button class="destroy" ng-click="deleteList(item)"></button>
 						</div>
             <!--双击label标签才会显示的编辑框-->
+            <!--在编辑框改变内容后，由于其设置了ng-model="item.name"，所以其内容的改变会同步到任务数组listArr中-->
 						<input class="edit" value="Create a TodoMVC template" ng-model="item.name" ng-blur="cancelEditing(item)" ipt-focus>
 					</li>
 				</ul>
 			</section>
 			<!-- This footer should hidden by default and shown when there are todos -->
+      <!--当任务数组的长度等于0的时候，需要将footer整体隐藏-->
 			<footer class="footer" ng-if="listArr.length !=0">
 				<!-- This should be `0 items left` by default -->
 				<span class="todo-count"><strong>{{unCompletedListNum()}}</strong> item left</span>

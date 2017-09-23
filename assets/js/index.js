@@ -119,6 +119,8 @@ angular.module("index",[])
     // 点击list任务栏里面的某个任务，修改任务的状态后，需要根据这个状态判断顶部的toggle-all复选框的status的值
     // 由于顶部复选框的高亮效果对应status值为true,取消高亮效果对应status值为false
     // 即staus值得改变会造成高亮效果的改变
+    // 因为顶部复选框的高亮效果是由添加伪元素:before，并且在其父元素:checked时，改变伪元素的样式
+    // 而status的值就是反应了复选框是否checked
     $scope.updateStatus = function () {
       // for (var i = 0; i < $scope.listArr.length; i++) {
       //    if(!$scope.listArr[i].isCompleted){
@@ -164,7 +166,7 @@ angular.module("index",[])
   }])
   .directive("iptFocus",["$timeout",function ($timeout) {
     return function (scope,element,attributes) {
-      // 这里监听的如果是scope.item.isEditing，会导致监听不到。为什么？？
+     // 按照监听的语法规则
       scope.$watch("item.isEditing",function (newValue) {
         if(newValue){
           $timeout(function () {
